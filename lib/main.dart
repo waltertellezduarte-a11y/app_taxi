@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'ingreso_form.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 
-void main() => runApp(const AppTaxiApp());
+///void main() => runApp(const AppTaxiApp()); esta línea la documento, porque se va a cambiar por otra para poder hacer funcionar el hive
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox('app_taxi');
+  runApp(const AppTaxiApp());
+}
 
 class AppTaxiApp extends StatelessWidget {
   const AppTaxiApp({super.key});
