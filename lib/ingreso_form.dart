@@ -84,7 +84,7 @@ class _IngresoFormPageState extends State<IngresoFormPage> {
                 const SizedBox(height: 12),
 
                 DropdownButtonFormField<String>(
-                  value: _metodo,
+                  initialValue: _metodo,
                   items: const [
                     DropdownMenuItem(value: 'Efectivo', child: Text('Efectivo')),
                     DropdownMenuItem(value: 'Nequi', child: Text('Nequi')),
