@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app_taxi/storage/app_storage.dart';
+
 
 class IngresoFormPage extends StatefulWidget {
   const IngresoFormPage({super.key});
@@ -34,23 +36,31 @@ class _IngresoFormPageState extends State<IngresoFormPage> {
     if (picked != null) setState(() => _fecha = picked);
   }
 
-  void _guardar() {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> _guardar() async {
+  if (!_formKey.currentState!.validate()) return;
 
-    final monto = int.parse(_montoCtrl.text);
+  final monto = int.parse(_montoCtrl.text);
 
-    // Por ahora solo mostramos lo que se guardaría.
-    // Luego lo guardamos en SQLite / archivo / etc.
-    final resumen = 'Ingreso: \$${monto.toString()} | $_metodo | '
-        '${_fecha.day}/${_fecha.month}/${_fecha.year} | '
-        'Nota: ${_notaCtrl.text.trim().isEmpty ? "(sin nota)" : _notaCtrl.text.trim()}';
+  final ingreso = {
+    'monto': monto,
+    'metodo': _metodo,
+    'fecha': _fecha.toIso8601String(),
+    'nota': _notaCtrl.text.trim(),
+  };
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(resumen)),
-    );
+  await AppStorage.addIngreso(ingreso);
 
-    Navigator.pop(context); // volver a la pantalla anterior
-  }
+  if (!mounted) return; // ✅ clave para quitar el warning
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('Ingreso guardado')),
+  );
+
+  Navigator.pop(context);
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {

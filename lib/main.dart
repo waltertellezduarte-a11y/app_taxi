@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'ingreso_form.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:app_taxi/storage/app_storage.dart';
+
 
 
 ///void main() => runApp(const AppTaxiApp()); esta línea la documento, porque se va a cambiar por otra para poder hacer funcionar el hive
@@ -82,19 +84,30 @@ class _HomeShellState extends State<HomeShell> {
 }
 
 /// Página principal: resumen del día + accesos rápidos
-class HomeDashboardPage extends StatelessWidget {
+class HomeDashboardPage extends StatefulWidget {
   const HomeDashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Valores de ejemplo (luego los conectamos a almacenamiento)
-    const ingresosHoy = 180000;
-    const gastosHoy = 35000;
-    const mantenimientosMes = 2;
+  State<HomeDashboardPage> createState() => _HomeDashboardPageState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('APP Taxi'),
+class _HomeDashboardPageState extends State<HomeDashboardPage> {
+ @override
+Widget build(BuildContext context) {
+  final ingresos = AppStorage.getIngresos(); // lista de ingresos guardados
+
+  final ingresosHoy = ingresos.isNotEmpty
+      ? ingresos
+          .map((e) => e['monto'] as int)
+          .reduce((a, b) => a + b)
+      : 0;
+
+  final gastosHoy = 0; // luego lo conectamos
+  final mantenimientosMes = 2;
+
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('APP Taxi'),
         centerTitle: false,
         actions: [
           IconButton(
