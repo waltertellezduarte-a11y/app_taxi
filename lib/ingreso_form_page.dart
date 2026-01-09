@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_taxi/storage/app_storage.dart';
 
-
 class IngresoFormPage extends StatefulWidget {
   const IngresoFormPage({super.key});
 
@@ -37,30 +36,28 @@ class _IngresoFormPageState extends State<IngresoFormPage> {
   }
 
   Future<void> _guardar() async {
-  if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
 
-  final monto = int.parse(_montoCtrl.text);
+    final monto = int.parse(_montoCtrl.text);
 
-  final ingreso = {
-    'monto': monto,
-    'metodo': _metodo,
-    'fecha': _fecha.toIso8601String(),
-    'nota': _notaCtrl.text.trim(),
-  };
+    final ingreso = {
+      'monto': monto,
+      'metodo': _metodo,
+      'fecha': _fecha.toIso8601String(),
+      'nota': _notaCtrl.text.trim(),
+    };
 
-  await AppStorage.addIngreso(ingreso);
+    await AppStorage.addIngreso(ingreso);
 
-  if (!mounted) return; // ✅ clave para quitar el warning
+    if (!mounted) return;
 
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('Ingreso guardado')),
-  );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Ingreso guardado')),
+    );
 
-  Navigator.pop(context);
-}
-
-
-
+    // ✅ CLAVE: avisar a la pantalla anterior que sí se guardó
+    Navigator.pop(context, true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +119,9 @@ class _IngresoFormPageState extends State<IngresoFormPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('${_fecha.day}/${_fecha.month}/${_fecha.year}'),
+                        Text(
+                          '${_fecha.day}/${_fecha.month}/${_fecha.year}',
+                        ),
                         const Icon(Icons.edit_calendar),
                       ],
                     ),

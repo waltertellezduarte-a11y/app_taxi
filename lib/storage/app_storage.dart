@@ -23,6 +23,12 @@ class AppStorage {
     await _box.put(_kIngresos, list);
   }
 
+    // Guardar lista completa de ingresos (para eliminar o editar)
+  static Future<void> setIngresos(List<Map<String, dynamic>> ingresos) async {
+    await _box.put(_kIngresos, ingresos);
+  }
+
+
   // Limpiar ingresos (útil para pruebas)
   static Future<void> clearIngresos() async {
     await _box.delete(_kIngresos);

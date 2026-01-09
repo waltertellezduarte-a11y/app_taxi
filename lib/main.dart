@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'ingreso_form.dart';
+import 'ingreso_form_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:app_taxi/storage/app_storage.dart';
+import 'package:app_taxi/pages/ingresos_historial_page.dart';
+
 
 
 
@@ -218,24 +220,41 @@ Widget build(BuildContext context) {
           ),
           const SizedBox(height: 12),
 
-          const _LastItemTile(
+          _LastItemTile(
             title: 'Ingreso',
             subtitle: 'Carrera + propina',
             trailing: '+ \$25.000',
             icon: Icons.trending_up,
+            onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const IngresosHistorialPage()),
+            );
+            },
           ),
-          const _LastItemTile(
+          _LastItemTile(
             title: 'Gasto',
             subtitle: 'Gasolina',
             trailing: '- \$40.000',
             icon: Icons.local_gas_station,
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Próximo: historial de gastos')),
+              );
+            },
           ),
-          const _LastItemTile(
+          _LastItemTile(
             title: 'Mantenimiento',
             subtitle: 'Cambio de aceite (programado)',
             trailing: 'Hoy',
             icon: Icons.build,
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Próximo: mantenimientos')),
+              );
+            },
           ),
+
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -428,12 +447,14 @@ class _LastItemTile extends StatelessWidget {
   final String subtitle;
   final String trailing;
   final IconData icon;
+  final VoidCallback? onTap;
 
   const _LastItemTile({
     required this.title,
     required this.subtitle,
     required this.trailing,
     required this.icon,
+    this.onTap,
   });
 
   @override
@@ -445,6 +466,7 @@ class _LastItemTile extends StatelessWidget {
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: Text(trailing),
+        onTap: onTap,
       ),
     );
   }
