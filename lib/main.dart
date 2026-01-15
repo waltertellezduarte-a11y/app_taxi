@@ -3,6 +3,7 @@ import 'ingreso_form_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:app_taxi/storage/app_storage.dart';
 import 'package:app_taxi/pages/ingresos_historial_page.dart';
+import 'package:app_taxi/gasto_form_page.dart';
 
 
 
@@ -95,19 +96,19 @@ class HomeDashboardPage extends StatefulWidget {
 
 class _HomeDashboardPageState extends State<HomeDashboardPage> {
  @override
+@override
 Widget build(BuildContext context) {
-  final ingresos = AppStorage.getIngresos(); // lista de ingresos guardados
+  final ingresosHoy = AppStorage.totalIngresosHoy();
+  final gastosHoy = AppStorage.totalGastosHoy();
+  final balanceHoy = ingresosHoy - gastosHoy;
 
-  final ingresosHoy = ingresos.isNotEmpty
-      ? ingresos
-          .map((e) => e['monto'] as int)
-          .reduce((a, b) => a + b)
-      : 0;
+  final ingresosMes = AppStorage.totalIngresosMes();
+  final gastosMes = AppStorage.totalGastosMes();
+  final balanceMes = ingresosMes - gastosMes;
 
-  final gastosHoy = 0; // luego lo conectamos
   final mantenimientosMes = 2;
 
-  return Scaffold(
+   return Scaffold(
     appBar: AppBar(
       title: const Text('APP Taxi'),
         centerTitle: false,
@@ -132,26 +133,45 @@ Widget build(BuildContext context) {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
+          
+        Row(
+          children: [
+            Expanded(
+              child: _KpiCard(
+                title: 'Ingresos (mes)',
+                value: _money(ingresosMes),
+                icon: Icons.trending_up,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _KpiCard(
+                title: 'Gastos (mes)',
+                value: _money(gastosMes),
+                icon: Icons.trending_down,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _KpiCard(
+                title: 'Balance Hoy',
+                value: _money(balanceHoy),
+                icon: Icons.account_balance_wallet,
+              ),
+            ),
+            Expanded(
+              child: _KpiCard(
+                title: 'Balance (mes)',
+                value: _money(balanceMes),
+                icon: Icons.account_balance_wallet,
+              ),
+),
 
-          Row(
-            children: [
-              Expanded(
-                child: _KpiCard(
-                  title: 'Ingresos',
-                  value: _money(ingresosHoy),
-                  icon: Icons.attach_money,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _KpiCard(
-                  title: 'Gastos',
-                  value: _money(gastosHoy),
-                  icon: Icons.receipt_long,
-                ),
-              ),
-            ],
-          ),
+          ],
+        ),
+
+
+
 
           const SizedBox(height: 12),
           _KpiCard(
@@ -177,20 +197,25 @@ Widget build(BuildContext context) {
               _QuickAction(
                 title: 'Registrar ingreso',
                 icon: Icons.trending_up,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Próximo: formulario de ingresos')),
+                onTap: () async {
+                  await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const IngresoFormPage()),
                   );
+                  setState(() {});
                 },
               ),
               _QuickAction(
                 title: 'Registrar gasto',
                 icon: Icons.trending_down,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Próximo: formulario de gastos')),
-                  );
+                onTap: () async {
+                await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const GastoFormPage()),
+               );
+                setState(() {});
                 },
+
               ),
               _QuickAction(
                 title: 'Mantenimiento',
