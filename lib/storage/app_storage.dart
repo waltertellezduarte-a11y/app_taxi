@@ -95,4 +95,18 @@ class AppStorage {
       })
       .fold<int>(0, (sum, e) => sum + ((e['monto'] ?? 0) as num).toInt());
   }
+
+  static Future<void> deleteGastoAt(int index) async {
+  final list = getGastos();
+  if (index < 0 || index >= list.length) return;
+  list.removeAt(index);
+  await _box.put(_kGastos, list);
+  }
+
+  static int totalGastos() {
+  return getGastos()
+      .fold<int>(0, (sum, e) => sum + ((e['monto'] ?? 0) as num).toInt());
+  }
+
+
 }
